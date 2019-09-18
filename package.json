@@ -5,10 +5,17 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "deploy": "vue-cli-service build && node deploy",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.22",
+    "@fortawesome/free-solid-svg-icons": "^5.10.2",
+    "@fortawesome/vue-fontawesome": "^0.1.7",
+    "bootstrap-vue": "^2.0.0",
+    "chartjs": "^0.3.24",
     "core-js": "^2.6.5",
+    "jquery": "^3.4.1",
     "vue": "^2.6.10",
     "vuex": "^3.0.1"
   },
@@ -23,6 +30,7 @@
     "lint-staged": "^8.1.5",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.1.0",
+    "sftp-sync-deploy": "^0.7.1",
     "vue-template-compiler": "^2.6.10"
   },
   "gitHooks": {
