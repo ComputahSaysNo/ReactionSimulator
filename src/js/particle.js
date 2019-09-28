@@ -1,19 +1,21 @@
 import Vector from '@/js/vector'
 
 export default class Particle {
-  constructor (species, pos = new Vector(), vel = new Vector()) {
+  constructor (species, pos = new Vector(), vel = new Vector(), isTransitionState = false, id = 0) {
+    this.id = id
     this.species = species.name
     this.radius = species.radius
     this.mass = species.mass
     this.colour = species.colour
     this.pos = pos
     this.vel = vel
-
+    this.removed = false
     this.currentGrid = new Vector(0, 0)
+    this.isTransitionState = isTransitionState
   }
 
   isColliding (otherParticle) {
-    return (this.radius + otherParticle.radius) ** 2 >= this.pos.subtract(otherParticle.pos, true).magSq()
+    return (this.radius + otherParticle.radius) ** 2 >= this.pos.differenceSq(otherParticle.pos)
   }
 
   bounceOff (otherParticle) {
@@ -21,6 +23,8 @@ export default class Particle {
     let deltaV = this.vel.subtract(otherParticle.vel, true)
     let m1 = this.mass
     let m2 = otherParticle.mass
+    let deltaXmag = deltaX.mag()
+    if (deltaXmag === 0) return
 
     let resolveIntersection = deltaX.scale(((this.radius + otherParticle.radius) - deltaX.mag()) / deltaX.mag(), true)
     this.pos.add(resolveIntersection.scale(0.5, true))
@@ -33,6 +37,6 @@ export default class Particle {
   }
 
   getKineticEnergy () {
-    return 0.5 * this.species.mass * this.vel.magSq()
+    return 0.5 * this.mass * this.vel.magSq()
   }
 }

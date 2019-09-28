@@ -63,6 +63,10 @@ class Vector {
     // Get the magnitude of the vector
     return Math.sqrt(this.magSq())
   }
+
+  differenceSq (otherVector) {
+    return (this.x - otherVector.x) ** 2 + (this.y - otherVector.y) ** 2
+  }
 }
 
 export default Vector

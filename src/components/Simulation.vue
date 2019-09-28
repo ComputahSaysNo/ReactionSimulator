@@ -11,7 +11,9 @@ export default {
   name: 'Simulation',
 
   data () {
-    return {}
+    return {
+      queuedFrames: 0
+    }
   },
 
   /* Graphics and simulation are stored outside of data() to prevent Vue from making them reactive.
@@ -55,10 +57,13 @@ export default {
     animateParticles: function () {
       this.graphics.drawFrame()
       if (!this.$store.state.simPaused) {
-        for (let i = 0; i < this.$store.state.drawSpeed; i++) {
+        this.queuedFrames += this.$store.state.drawSpeed
+        while (this.queuedFrames >= 1) {
           this.simulation.tick()
+          this.queuedFrames--
         }
       }
+      // console.log(this.simulation)
       window.requestAnimationFrame(this.animateParticles)
     },
     updateStore: function () {

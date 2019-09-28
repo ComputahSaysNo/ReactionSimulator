@@ -18,8 +18,14 @@
 </template>
 
 <script>
+
 export default {
+
   name: 'Controls',
+  data () {
+    return {
+    }
+  },
   methods: {
     togglePause: function () {
       this.$store.commit('togglePause')
@@ -46,6 +52,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 #controls {
   position: absolute;
   bottom: 1em;

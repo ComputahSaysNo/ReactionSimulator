@@ -28,6 +28,9 @@ export default class Graphics {
 
     this.mouseDown = false
     this.panStartPos = null // Will be set to the value that the user begins panning
+
+    this.followMode = true
+    this.followID = 2
   }
 
   setBaseZoom () {
@@ -36,10 +39,19 @@ export default class Graphics {
   }
 
   drawFrame () {
+    if (this.followMode) {
+      this.followTarget()
+    }
     this.limitPan()
     this.clearCanvas()
     this.drawSimulationBox()
     this.drawParticles()
+  }
+
+  followTarget () {
+    let target = this.simulation.getParticleById(this.followID)
+    if (target === null) return
+    this.simOffset = target.pos.scale(-1, true).add(new Vector((this.canvas.width / 2) / this.zoom, (this.canvas.height / 2) / this.zoom))
   }
 
   simPosToCanvasPos (sPos) {
@@ -90,11 +102,11 @@ export default class Graphics {
     for (let weight of [CONSTANTS.SIMULATION_SMALL_GRID, CONSTANTS.SIMULATION_BIG_GRID]) {
       this.ctx.fillStyle = weight.COLOUR
       for (let i = ((this.canvasPosToSimPos(new Vector(0, 0)).x) / weight.WIDTH) - 1; i <= ((this.canvasPosToSimPos(new Vector(this.canvas.width, 0)).x) / weight.WIDTH) + 1; i++) {
-        let start = this.simPosToCanvasPos(new Vector(Math.floor(i) * weight.WIDTH, 0))
+        let start = this.simPosToCanvasPos(new Vector(Math.floor(i) * weight.WIDTH - weight.BORDER_THICKNESS, 0))
         this.ctx.fillRect(start.x, 0, scale * weight.BORDER_THICKNESS, this.canvas.height)
       }
       for (let i = ((this.canvasPosToSimPos(new Vector(0, 0)).y) / weight.WIDTH) - 1; i <= ((this.canvasPosToSimPos(new Vector(0, this.canvas.height)).y) / weight.WIDTH) + 1; i++) {
-        let start = this.simPosToCanvasPos(new Vector(0, Math.floor(i) * weight.WIDTH))
+        let start = this.simPosToCanvasPos(new Vector(0, Math.floor(i) * weight.WIDTH - weight.BORDER_THICKNESS))
         this.ctx.fillRect(0, start.y, this.canvas.width, scale * weight.BORDER_THICKNESS)
       }
     }

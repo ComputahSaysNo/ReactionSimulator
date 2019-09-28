@@ -6,7 +6,9 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     simulationInfo: {
-      age: 0
+      age: 0,
+      composition: {},
+      ke: 0
     },
     simPaused: false,
     drawSpeed: 1
@@ -17,13 +19,21 @@ export default new Vuex.Store({
     },
     speed: state => {
       return state.drawSpeed
+    },
+    comp: state => {
+      return state.simulationInfo.composition
+    },
+    ke: state => {
+      return state.simulationInfo.ke
     }
 
   },
   mutations: {
     updateSimulation: (state, payload) => {
       state.simulationInfo = {
-        age: payload.sim.age
+        age: payload.sim.age,
+        composition: payload.sim.getComposition(),
+        ke: payload.sim.getTotalKE()
       }
     },
     togglePause: state => {
