@@ -1,29 +1,9 @@
-# reactionsimulator-vue
+## reactionsimulator
 
-## Project setup
-```
-npm install
-```
+ A web based chemical kinetics simulation, modelling a reaction as gas particles colliding in real time
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+Made using VueJS 2, with ChartJS for data presentation.
 
-### Run your tests
-```
-npm run test
-```
+Current version is hosted at [kevco.ddns.net](http://kevco.ddns.net).
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
