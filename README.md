@@ -1,4 +1,4 @@
-# reactionsimulator-vue
+# reactionsimulator
 
 ## Project setup
 ```
