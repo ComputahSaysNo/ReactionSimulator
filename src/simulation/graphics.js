@@ -1,5 +1,5 @@
-import Vector from '@/js/vector'
-import CONSTANTS from '@/js/constants'
+import Vector from '@/simulation/vector'
+import CONSTANTS from '@/simulation/constants'
 
 export default class Graphics {
   /* A class binding to a canvas that can be used to draw simulation objects to the screen
@@ -29,8 +29,8 @@ export default class Graphics {
     this.mouseDown = false
     this.panStartPos = null // Will be set to the value that the user begins panning
 
-    this.followMode = true
-    this.followID = 2
+    this.followMode = false
+    this.followID = 0
   }
 
   setBaseZoom () {
@@ -42,9 +42,11 @@ export default class Graphics {
     if (this.followMode) {
       this.followTarget()
     }
+
     this.limitPan()
     this.clearCanvas()
     this.drawSimulationBox()
+
     this.drawParticles()
   }
 
@@ -76,6 +78,13 @@ export default class Graphics {
       let canvasPos = this.simPosToCanvasPos(particle.pos)
 
       // Draw the circle
+      if (particle.id === this.followID) {
+        this.ctx.beginPath()
+        this.ctx.arc(canvasPos.x, canvasPos.y, (particle.radius + 0.5) * this.zoom, 0, Math.PI * 2)
+        this.ctx.closePath()
+        this.ctx.fillStyle = '#000000'
+        this.ctx.fill()
+      }
       this.ctx.beginPath()
       this.ctx.arc(canvasPos.x, canvasPos.y, particle.radius * this.zoom, 0, Math.PI * 2)
       this.ctx.closePath()
@@ -87,7 +96,7 @@ export default class Graphics {
   drawSimulationBox () {
     let dimensions = this.simulation.dimensions
 
-    // Accounts for minZoom being very small, meaning the grid lines have the thickness specified in constants.js at minimum zoom
+    // Accounts for minZoom being very small, meaning the grid lines have the thickness specified in constants.simulation at minimum zoom
     const scale = this.zoom / this.baseZoom
 
     // Conversions of the coordinates (0, 0) and (simulation.width, simulation.height) to canvas coordinates

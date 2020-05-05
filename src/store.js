@@ -8,7 +8,8 @@ export default new Vuex.Store({
     simulationInfo: {
       age: 0,
       composition: {},
-      ke: 0
+      ke: 0,
+      temp: 0
     },
     simPaused: false,
     drawSpeed: 1
@@ -25,6 +26,9 @@ export default new Vuex.Store({
     },
     ke: state => {
       return state.simulationInfo.ke
+    },
+    temp: state => {
+      return state.simulationInfo.temp
     }
 
   },
@@ -33,7 +37,8 @@ export default new Vuex.Store({
       state.simulationInfo = {
         age: payload.sim.age,
         composition: payload.sim.getComposition(),
-        ke: payload.sim.getTotalKE()
+        ke: payload.sim.getTotalKE(),
+        temp: payload.sim.getTemperature()
       }
     },
     togglePause: state => {

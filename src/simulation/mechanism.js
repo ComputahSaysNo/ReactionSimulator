@@ -4,6 +4,8 @@ export default class Mechanism {
   }
 
   addStep (reactants, products, activationEnergy, deltaH, reversible = true) {
+    if (activationEnergy < 0) throw new Error('Activation energy must be positive!')
+    if (activationEnergy < deltaH) throw new Error('Activation energy must be greater than delta H!')
     let forwardReaction = {
       reactants: reactants,
       products: products,

@@ -2,7 +2,7 @@
 <div class="bg-success py-2 pr-2" id="side-panel" :class="{closed: panelClosed}">
   <div id="side-panel-collapse" class="bg-success" v-on:click="panelClosed = !panelClosed"></div>
   <b-container class="bg-light w-100 h-100 rounded">
-    <h1>Hi</h1>
+<!--    <h1>Hi</h1>-->
   </b-container>
 </div>
 </template>

@@ -1,17 +1,20 @@
 <template>
 <div id="status" class="bg-dark">
-  <b-container fluid>
+  <b-container>
     <b-row class="py-1">
       <b-badge pill variant="info" class="w-100">FPS: {{ fps }}</b-badge>
     </b-row>
     <b-row class="py-1">
-      <b-badge pill variant="warning" class="w-100">Sim Age: {{ age }}</b-badge>
+      <b-badge pill variant="info" class="w-100">Sim Age: {{ age }}</b-badge>
     </b-row>
     <b-row class="py-1">
-      <b-badge pill variant="danger" class="w-100">Speed: {{ speed }}x</b-badge>
+      <b-badge pill variant="info" class="w-100">Speed: {{ speed }}x</b-badge>
     </b-row>
     <b-row class="py-1">
       <b-badge pill variant="info" class="w-100">Total KE: {{ ke }}</b-badge>
+    </b-row>
+    <b-row class="py-1">
+      <b-badge pill variant="info" class="w-100">Temperature: {{ temp }}K</b-badge>
     </b-row>
     <br>
     <b-row>
@@ -69,7 +72,10 @@ export default {
       return this.$store.getters.comp
     },
     ke: function () {
-      return Math.floor(this.$store.getters.ke)
+      return Math.round(this.$store.getters.ke)
+    },
+    temp: function () {
+      return Math.round(this.$store.getters.temp)
     }
   }
 }

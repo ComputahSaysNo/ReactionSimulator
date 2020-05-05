@@ -1,24 +1,35 @@
-import CONSTANTS from '@/js/constants'
+import CONSTANTS from '@/simulation/constants'
 import Particle from './particle'
 import Species from './species'
 import Vector from './vector'
-import Mechanism from '@/js/mechanism'
+import Mechanism from '@/simulation/mechanism'
 
-function getRmsGasSpeed (temperature, mass) {
-  return Math.sqrt(3 * CONSTANTS.GAS_CONSTANT * temperature / mass)
+function getMBVelVector (temperature, mass) {
+  let components = []
+  // to follow MB, x and y need to be gaussian variables with mean 0 and sd (sqrt(T*k/m))
+  for (let x = 0; x < 2; x++) {
+    let u = 0; let v = 0
+    while (u === 0) u = Math.random() // Converting [0,1) to (0,1)
+    while (v === 0) v = Math.random()
+    let gauss = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v)
+    // Box-Muller transform to generate numbers from N(0, 1) using two uniform random variables
+    components.push(Math.sqrt(CONSTANTS.GAS_CONSTANT * temperature / mass) * gauss)
+    // Scale by desired sd
+  }
+  return new Vector(components[0], components[1])
 }
 
 export default class Simulation {
-  constructor (dimensions = new Vector(2000, 2000), mechanism = [], initialTemperature = 3, collisionGridSize = CONSTANTS.COLLISION_GRID_SIZE) {
+  constructor (dimensions = new Vector(2000, 2000), mechanism = [], initialTemperature = 100, collisionGridSize = CONSTANTS.COLLISION_GRID_SIZE) {
     this.dimensions = dimensions
 
     this.mechanism = new Mechanism()
 
-    let a = new Species('a', '#FF0000', 5)
-    let b = new Species('b', '#28793c', 5)
-    let c = new Species('c', '#3997ff', 5)
-    let d = new Species('d', '#aea328', 5)
-
+    let a = new Species('a', '#FF0000', 50)
+    let b = new Species('b', '#28793c', 50)
+    let c = new Species('c', '#3997ff', 50)
+    let d = new Species('d', '#aea328', 50)
+    // let e = new Species('e', '#000000', 20, 1)
     this.speciesInvolved = {
       a: a,
       b: b,
@@ -26,7 +37,7 @@ export default class Simulation {
       d: d
     }
 
-    this.mechanism.addStep([a, b], [c, d], 1, -1, true)
+    this.mechanism.addStep([a, b], [c, d], 20, -10, false)
 
     this.temperature = initialTemperature
     this.collisionsGridSize = collisionGridSize
@@ -35,18 +46,21 @@ export default class Simulation {
     this.age = 0
     this.idCounter = makeCounter()
 
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 800; i++) {
       this.addParticle(a)
     }
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 800; i++) {
       this.addParticle(b)
     }
-    for (let i = 0; i < 1000; i++) {
-      this.addParticle(c)
-    }
-    for (let i = 0; i < 1000; i++) {
-      this.addParticle(d)
-    }
+    // for (let i = 0; i < 500; i++) {
+    //   this.addParticle(c)
+    // }
+    // for (let i = 0; i < 500; i++) {
+    //   this.addParticle(d)
+    // }
+    // for (let i = 0; i < 4000; i++) {
+    //   this.addParticle(e)
+    // }
     // this.addParticle(a, new Vector(100, 100), new Vector(0, 1))
     // this.addParticle(b, new Vector(100, 500), new Vector(0, -1))
 
@@ -57,11 +71,10 @@ export default class Simulation {
     species,
     pos = new Vector(Math.random() * this.dimensions.x, Math.random() * this.dimensions.y),
     // If no position is supplied, select randomly within the bounds of the simulation
-    vel = new Vector().fromAngle(Math.random() * 2 * Math.PI, getRmsGasSpeed(this.temperature, species.mass)),
+    vel = getMBVelVector(this.temperature, species.mass)
     // If no velocity is supplied, set to the RMS speed for the simulation's temperature, pointing in a random direction
-    id = this.idCounter()
   ) {
-    let particleToAdd = new Particle(species, pos, vel, false, id)
+    let particleToAdd = new Particle(species, pos, vel)
     this.queuedParticlesToAdd.push(particleToAdd)
   }
 
@@ -81,41 +94,37 @@ export default class Simulation {
     for (let particle of this.particles) {
       if (particle.pos.x < particle.radius) {
         particle.vel.x *= -1
-        // particle.vel.scale(0.95)
         particle.pos.x = particle.radius
       } else if (particle.pos.x > this.dimensions.x - particle.radius) {
         particle.vel.x *= -1
-        // particle.vel.scale(0.95)
         particle.pos.x = this.dimensions.x - particle.radius
       }
       if (particle.pos.y < particle.radius) {
         particle.vel.y *= -1
-        // particle.vel.scale(0.95)
         particle.pos.y = particle.radius
       } else if (particle.pos.y > this.dimensions.y - particle.radius) {
         particle.vel.y *= -1
-        // particle.vel.scale(0.95)
         particle.pos.y = this.dimensions.y - particle.radius
       }
     }
   }
 
   resolveParticleCollisions () {
-    let grids = []
+    let grid = []
     const numGridsX = Math.ceil(this.dimensions.x / this.collisionsGridSize)
     const numGridsY = Math.ceil(this.dimensions.y / this.collisionsGridSize)
     for (let x = 0; x < numGridsX; x++) {
-      grids[x] = []
+      grid[x] = []
       for (let y = 0; y < numGridsY; y++) {
-        grids[x].push([])
+        grid[x].push([])
       }
     }
     for (let particle of this.particles) {
       if (isNaN(particle.pos.x)) console.log(particle)
-      grids[particle.currentGrid.x][particle.currentGrid.y].push(particle)
+      grid[particle.currentGrid.x][particle.currentGrid.y].push(particle)
     }
 
-    for (let row of grids) {
+    for (let row of grid) {
       for (let square of row) {
         for (let i = 0; i < square.length; i++) {
           let p1 = square[i]
@@ -148,6 +157,7 @@ export default class Simulation {
     transitionState.lifetime = CONSTANTS.TRANSITION_STATE_LIFETIME
     this.queuedParticlesToAdd.push(transitionState)
     p1.removed = p2.removed = true
+    this.temperature += -(reaction.deltaH) / (this.particles.length * CONSTANTS.GAS_CONSTANT * 5)
   }
 
   clearRemovedParticles () {
@@ -157,7 +167,6 @@ export default class Simulation {
     }
     this.particles = newParticleList
   }
-
   updateParticleGrid () {
     for (let particle of this.particles) {
       particle.currentGrid.x = Math.floor(particle.pos.x / this.collisionsGridSize)
@@ -169,6 +178,11 @@ export default class Simulation {
     this.age++
     for (let particle of this.particles) {
       particle.pos.add(particle.vel)
+      // if (particle.vel.mag() > getRmsGasSpeed(this.temperature, particle.mass)) {
+      //   particle.vel.scale(0.9999)
+      // } else {
+      //   particle.vel.scale(1.0001)
+      // }
       if (particle.isTransitionState) {
         particle.lifetime--
         if (particle.lifetime % 10 === 0) particle.colour = '#' + Math.floor(Math.random() * 16777215).toString(16)
@@ -212,6 +226,10 @@ export default class Simulation {
     let total = 0
     for (let particle of this.particles) total += particle.getKineticEnergy()
     return total
+  }
+
+  getTemperature () {
+    return (2 * this.getTotalKE() / this.particles.length) / CONSTANTS.GAS_CONSTANT
   }
 }
 

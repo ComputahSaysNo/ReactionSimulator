@@ -1,7 +1,7 @@
 const CONSTANTS = {
 
   PARTICLE_MASS_AREA_CONVERSION: 1.0, // Scaling factor between a species's mass and its area in the simulation (units^2)
-  COLLISION_GRID_SIZE: 50, // Defines the size of the grid system that is used for detecting particle-particle collisions
+  COLLISION_GRID_SIZE: 500, // Defines the size of the grid system that is used for detecting particle-particle collisions
   GAS_CONSTANT: 0.1, // Used in various calculations relating molecular speed and temperature
 
   SIMULATION_BG_COLOUR: '#f1f1f1',
@@ -26,7 +26,7 @@ const CONSTANTS = {
   ZOOM_RATE: 1.05, // The factor by which the simulation graphic is scaled when the user scrolls in or out
   MAX_ZOOM_LEVEL: 60,
 
-  TRANSITION_STATE_LIFETIME: 50
+  TRANSITION_STATE_LIFETIME: 10
 }
 
 export default CONSTANTS

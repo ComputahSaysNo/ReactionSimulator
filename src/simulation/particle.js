@@ -1,4 +1,4 @@
-import Vector from '@/js/vector'
+import Vector from '@/simulation/vector'
 
 export default class Particle {
   constructor (species, pos = new Vector(), vel = new Vector(), isTransitionState = false, id = 0) {

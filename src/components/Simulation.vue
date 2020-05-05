@@ -4,8 +4,8 @@
 </template>
 
 <script>
-import Simulation from '@/js/simulation'
-import Graphics from '@/js/graphics'
+import Simulation from '@/simulation/simulation'
+import Graphics from '@/simulation/graphics'
 
 export default {
   name: 'Simulation',

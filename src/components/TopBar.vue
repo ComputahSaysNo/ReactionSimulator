@@ -4,11 +4,14 @@
     Reaction Simulator
     <small class="text-primary">(v{{ version }})</small>
   </b-navbar-brand>
+  <b-navbar-nav class="ml-auto">
+    <b-button size="small" class="mx-3" variant="primary">New Experiment</b-button>
+    <b-button size="small" variant="success">New Mechanism</b-button>
+  </b-navbar-nav>
 </b-navbar>
 </template>
 
 <script>
-
 export default {
   name: 'Header',
   data () {
@@ -18,8 +21,7 @@ export default {
       version: '1.0'
     }
   },
-  methods: {
-  },
+  methods: {},
   mounted: function () {
   },
   computed: {
@@ -31,4 +33,5 @@ export default {
 </script>
 
 <style scoped>
+
 </style>
