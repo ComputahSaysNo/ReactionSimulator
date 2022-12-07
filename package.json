@@ -31,7 +31,7 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
-    "lint-staged": "^8.1.5",
+    "lint-staged": "^13.1.0",
     "node-sass": "^4.14.1",
     "sass-loader": "^7.1.0",
     "sftp-sync-deploy": "^0.7.1",
